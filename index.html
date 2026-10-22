@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>استودیو پرامپت سینمایی و ویدیویی هوش مصنوعی | CinePrompt AI</title>
+  <!-- Google Fonts: Vazirmatn & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            vazir: ['Vazirmatn', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cinema: {
+              950: '#070709',
+              900: '#0d0e12',
+              850: '#13151b',
+              800: '#1a1d26',
+              700: '#262a36',
+              accent: '#f59e0b',
+              cyan: '#06b6d4',
+              neon: '#10b981'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      font-family: 'Vazirmatn', sans-serif !important;
+      letter-spacing: 0 !important;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0d0e12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #262a36;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f59e0b;
+    }
+  </style>
+</head>
+<body class="bg-cinema-950 text-slate-200 min-h-screen selection:bg-amber-500/30 selection:text-amber-200 antialiased">
+
+  <div id="app" class="min-h-screen flex flex-col justify-between">
+    
+    <!-- Header -->
+    <header class="border-b border-cinema-700/60 bg-cinema-900/80 backdrop-blur-md sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-cinema-950 font-black text-xl shadow-lg shadow-amber-500/20">
+            C
+          </div>
+          <div>
+            <h1 class="text-lg md:text-xl font-bold text-white flex items-center gap-2">
+              استودیو کارگردانی و سینماتوگرافی هوش مصنوعی
+              <span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-normal">نسخه حرفه‌ای</span>
+            </h1>
+            <p class="text-xs text-slate-400">سازنده جامع پرامپت‌های فیلم‌سازی، ویدیوگیم و هوش مصنوعی تصویری</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button @click="randomizeAll" class="px-3 py-1.5 rounded-lg bg-cinema-800 hover:bg-cinema-700 text-amber-400 text-xs font-medium border border-amber-500/30 flex items-center gap-1.5 transition-all shadow-sm active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            ترکیب تصادفی
+          </button>
+          <button @click="resetAll" class="px-3 py-1.5 rounded-lg bg-cinema-800 hover:bg-cinema-700 text-slate-300 text-xs font-medium border border-cinema-700 flex items-center gap-1.5 transition-all active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            پاک‌سازی
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6 w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Selection Columns (Left 8 cols on desktop) -->
+      <section class="lg:col-span-7 space-y-6">
+        
+        <!-- Search bar -->
+        <div class="relative">
+          <input 
+            v-model="searchQuery" 
+            type="text" 
+            placeholder="جستجو در میان کارگردان‌ها، دوربین‌ها، لنزها، سبک‌ها و نورپردازی..." 
+            class="w-full bg-cinema-900 border border-cinema-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/70 transition-all"
+          />
+          <span v-if="searchQuery" @click="searchQuery = ''" class="absolute left-3 top-3.5 text-xs text-slate-400 cursor-pointer hover:text-white">✕</span>
+        </div>
+
+        <!-- 1. Subject & Action -->
+        <div class="bg-cinema-900/90 border border-cinema-800 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold">۱</span>
+              <h2 class="font-bold text-white text-sm md:text-base">سوژه اصلی و روایت صحنه (Subject & Action)</h2>
+            </div>
+            <span class="text-xs text-slate-400">پایه اصلی شات</span>
+          </div>
+          
+          <textarea 
+            v-model="customSubject" 
+            dir="ltr"
+            rows="2" 
+            placeholder="e.g. A cybernetic wanderer standing on a rain-drenched rooftop in Tokyo, neon reflections on wet glass..." 
+            class="font-mono-code text-xs w-full bg-cinema-950 border border-cinema-700/80 rounded-xl p-3 text-emerald-300 placeholder-slate-600 focus:outline-none focus:border-amber-500/60 leading-relaxed"
+          ></textarea>
+
+          <div class="mt-3">
+            <p class="text-xs text-slate-400 mb-2">یا انتخاب سریع سناریوهای آماده سینمایی:</p>
+            <div class="flex flex-wrap gap-1.5">
+              <button 
+                v-for="preset in subjectPresets" 
+                :key="preset.id"
+                @click="customSubject = preset.prompt"
+                :class="customSubject === preset.prompt ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-cinema-850 text-slate-300 border-cinema-700/60 hover:border-slate-500'"
+                class="text-xs px-2.5 py-1 rounded-lg border transition-all"
+              >
+                {{ preset.titleFa }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 border-b border-cinema-800 text-xs">
+          <button 
+            v-for="cat in categories" 
+            :key="cat.id" 
+            @click="activeTab = cat.id"
+            :class="activeTab === cat.id ? 'text-amber-400 border-b-2 border-amber-500 font-bold bg-amber-500/5' : 'text-slate-400 hover:text-slate-200'"
+            class="px-3 py-2 whitespace-nowrap transition-all rounded-t-lg flex items-center gap-1.5"
+          >
+            <span>{{ cat.icon }}</span>
+            <span>{{ cat.nameFa }}</span>
+            <span v-if="getSelectedCount(cat.id)" class="w-4 h-4 rounded-full bg-amber-500 text-cinema-950 text-[10px] flex items-center justify-center font-bold">
+              {{ getSelectedCount(cat.id) }}
+            </span>
+          </button>
+        </div>
+
+        <!-- Category View: Directors -->
+        <div v-show="activeTab === 'directors'" class="space-y-4">
+          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>کارگردان‌ها و مؤلفان سینمایی (انتخاب یک یا چند مورد جهت ترکیب سبک)</span>
+            <span>{{ filteredDirectors.length }} مورد</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div 
+              v-for="d in filteredDirectors" 
+              :key="d.id"
+              @click="toggleSelection('directors', d)"
+              :class="isSelected('directors', d) ? 'border-amber-500 bg-amber-500/10 shadow-md shadow-amber-500/5' : 'border-cinema-800 bg-cinema-900/60 hover:border-cinema-700'"
+              class="p-3.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="font-bold text-white text-sm group-hover:text-amber-400 transition-colors">{{ d.nameFa }}</span>
+                  <span class="text-[11px] font-mono-code text-slate-400" dir="ltr">{{ d.nameEn }}</span>
+                </div>
+                <div class="text-xs text-amber-400/80 mb-1.5">دوره / سبک: {{ d.eraFa }}</div>
+                <p class="text-xs text-slate-300 leading-relaxed">{{ d.styleFa }}</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-cinema-800/80 flex items-center justify-between">
+                <span class="text-[11px] font-mono-code text-slate-500 truncate max-w-[200px]" dir="ltr">{{ d.promptTag }}</span>
+                <span :class="isSelected('directors', d) ? 'text-amber-400 font-bold' : 'text-slate-600'" class="text-xs">
+                  {{ isSelected('directors', d) ? '✓ انتخاب شد' : '+ انتخاب' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category View: Cameras -->
+        <div v-show="activeTab === 'cameras'" class="space-y-4">
+          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>دوربین‌ها، سنسورها و نگاتیوهای آنالوگ و دیجیتال</span>
+            <span>{{ filteredCameras.length }} مورد</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div 
+              v-for="c in filteredCameras" 
+              :key="c.id"
+              @click="toggleSelection('cameras', c)"
+              :class="isSelected('cameras', c) ? 'border-amber-500 bg-amber-500/10' : 'border-cinema-800 bg-cinema-900/60 hover:border-cinema-700'"
+              class="p-3.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="font-bold text-white text-sm group-hover:text-amber-400 transition-colors">{{ c.nameFa }}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-cinema-800 text-slate-300">{{ c.typeFa }}</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed mt-1.5">{{ c.descFa }}</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-cinema-800/80 flex items-center justify-between">
+                <span class="text-[11px] font-mono-code text-slate-500 truncate max-w-[200px]" dir="ltr">{{ c.promptTag }}</span>
+                <span :class="isSelected('cameras', c) ? 'text-amber-400 font-bold' : 'text-slate-600'" class="text-xs">
+                  {{ isSelected('cameras', c) ? '✓ انتخاب شد' : '+ انتخاب' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category View: Lenses -->
+        <div v-show="activeTab === 'lenses'" class="space-y-4">
+          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>لنزها، اپتیک‌های آنامورفیک، اسفریکال و تخصصی</span>
+            <span>{{ filteredLenses.length }} مورد</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div 
+              v-for="l in filteredLenses" 
+              :key="l.id"
+              @click="toggleSelection('lenses', l)"
+              :class="isSelected('lenses', l) ? 'border-amber-500 bg-amber-500/10' : 'border-cinema-800 bg-cinema-900/60 hover:border-cinema-700'"
+              class="p-3.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="font-bold text-white text-sm group-hover:text-amber-400 transition-colors">{{ l.nameFa }}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-cinema-800 text-slate-300">{{ l.typeFa }}</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed mt-1.5">{{ l.descFa }}</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-cinema-800/80 flex items-center justify-between">
+                <span class="text-[11px] font-mono-code text-slate-500 truncate max-w-[200px]" dir="ltr">{{ l.promptTag }}</span>
+                <span :class="isSelected('lenses', l) ? 'text-amber-400 font-bold' : 'text-slate-600'" class="text-xs">
+                  {{ isSelected('lenses', l) ? '✓ انتخاب شد' : '+ انتخاب' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category View: Lighting -->
+        <div v-show="activeTab === 'lighting'" class="space-y-4">
+          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>نورپردازی، اتمسفر و جهت‌گیری نور</span>
+            <span>{{ filteredLighting.length }} مورد</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div 
+              v-for="lt in filteredLighting" 
+              :key="lt.id"
+              @click="toggleSelection('lighting', lt)"
+              :class="isSelected('lighting', lt) ? 'border-amber-500 bg-amber-500/10' : 'border-cinema-800 bg-cinema-900/60 hover:border-cinema-700'"
+              class="p-3.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="font-bold text-white text-sm group-hover:text-amber-400 transition-colors">{{ lt.nameFa }}</span>
+                  <span class="text-[11px] font-mono-code text-slate-400" dir="ltr">{{ lt.nameEn }}</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed mt-1.5">{{ lt.descFa }}</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-cinema-800/80 flex items-center justify-between">
+                <span class="text-[11px] font-mono-code text-slate-500 truncate max-w-[200px]" dir="ltr">{{ lt.promptTag }}</span>
+                <span :class="isSelected('lighting', lt) ? 'text-amber-400 font-bold' : 'text-slate-600'" class="text-xs">
+                  {{ isSelected('lighting', lt) ? '✓ انتخاب شد' : '+ انتخاب' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category View: Shots & Movements -->
+        <div v-show="activeTab === 'shots'" class="space-y-4">
+          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>انواع نما، زاویه دوربین و حرکات دینامیک</span>
+            <span>{{ filteredShots.length }} مورد</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div 
+              v-for="s in filteredShots" 
+              :key="s.id"
+              @click="toggleSelection('shots', s)"
+              :class="isSelected('shots', s) ? 'border-amber-500 bg-amber-500/10' : 'border-cinema-800 bg-cinema-900/60 hover:border-cinema-700'"
+              class="p-3.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="font-bold text-white text-sm group-hover:text-amber-400 transition-colors">{{ s.nameFa }}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-cinema-800 text-slate-300">{{ s.typeFa }}</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed mt-1.5">{{ s.descFa }}</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-cinema-800/80 flex items-center justify-between">
+                <span class="text-[11px] font-mono-code text-slate-500 truncate max-w-[200px]" dir="ltr">{{ s.promptTag }}</span>
+                <span :class="isSelected('shots', s) ? 'text-amber-400 font-bold' : 'text-slate-600'" class="text-xs">
+                  {{ isSelected('shots', s) ? '✓ انتخاب شد' : '+ انتخاب' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category View: Mediums & Game Engines -->
+        <div v-show="activeTab === 'mediums'" class="space-y-4">
+          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>موتورهای بازی، تکنولوژی رندر و سبک‌های انیمیشن</span>
+            <span>{{ filteredMediums.length }} مورد</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div 
+              v-for="m in filteredMediums" 
+              :key="m.id"
+              @click="toggleSelection('mediums', m)"
+              :class="isSelected('mediums', m) ? 'border-amber-500 bg-amber-500/10' : 'border-cinema-800 bg-cinema-900/60 hover:border-cinema-700'"
+              class="p-3.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="font-bold text-white text-sm group-hover:text-amber-400 transition-colors">{{ m.nameFa }}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-cinema-800 text-slate-300">{{ m.categoryFa }}</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed mt-1.5">{{ m.descFa }}</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-cinema-800/80 flex items-center justify-between">
+                <span class="text-[11px] font-mono-code text-slate-500 truncate max-w-[200px]" dir="ltr">{{ m.promptTag }}</span>
+                <span :class="isSelected('mediums', m) ? 'text-amber-400 font-bold' : 'text-slate-600'" class="text-xs">
+                  {{ isSelected('mediums', m) ? '✓ انتخاب شد' : '+ انتخاب' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category View: Color Grading -->
+        <div v-show="activeTab === 'color'" class="space-y-4">
+          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>پالت‌های رنگی، تصحیح رنگ و LUT سینمایی</span>
+            <span>{{ filteredColors.length }} مورد</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div 
+              v-for="col in filteredColors" 
+              :key="col.id"
+              @click="toggleSelection('colors', col)"
+              :class="isSelected('colors', col) ? 'border-amber-500 bg-amber-500/10' : 'border-cinema-800 bg-cinema-900/60 hover:border-cinema-700'"
+              class="p-3.5 rounded-xl border cursor-pointer transition-all flex flex-col justify-between group"
+            >
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <span class="font-bold text-white text-sm group-hover:text-amber-400 transition-colors">{{ col.nameFa }}</span>
+                  <span class="text-[11px] font-mono-code text-slate-400" dir="ltr">{{ col.nameEn }}</span>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed mt-1.5">{{ col.descFa }}</p>
+              </div>
+              <div class="mt-3 pt-2 border-t border-cinema-800/80 flex items-center justify-between">
+                <span class="text-[11px] font-mono-code text-slate-500 truncate max-w-[200px]" dir="ltr">{{ col.promptTag }}</span>
+                <span :class="isSelected('colors', col) ? 'text-amber-400 font-bold' : 'text-slate-600'" class="text-xs">
+                  {{ isSelected('colors', col) ? '✓ انتخاب شد' : '+ انتخاب' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category View: Aspect Ratio -->
+        <div v-show="activeTab === 'ratio'" class="space-y-4">
+          <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <span>نسبت تصویر و قاب‌بندی خروجی</span>
+            <span>{{ aspectRatios.length }} مورد</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div 
+              v-for="ar in aspectRatios" 
+              :key="ar.id"
+              @click="selectedRatio = ar"
+              :class="selectedRatio && selectedRatio.id === ar.id ? 'border-amber-500 bg-amber-500/10' : 'border-cinema-800 bg-cinema-900/60 hover:border-cinema-700'"
+              class="p-3 rounded-xl border cursor-pointer transition-all text-center group"
+            >
+              <div class="text-base font-bold font-mono-code text-white group-hover:text-amber-400 mb-1" dir="ltr">{{ ar.ratio }}</div>
+              <div class="text-xs text-amber-400/90 mb-1">{{ ar.nameFa }}</div>
+              <div class="text-[11px] text-slate-400 leading-snug">{{ ar.descFa }}</div>
+              <div class="mt-2 pt-1 border-t border-cinema-800 text-[10px] font-mono-code text-slate-500" dir="ltr">{{ ar.mjFlag }}</div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Live Prompt Preview & Output (Right 5 cols on desktop) -->
+      <section class="lg:col-span-5 space-y-5 lg:sticky lg:top-20 self-start">
+        
+        <!-- Output Card -->
+        <div class="bg-cinema-900 border border-cinema-700/80 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+          <div class="flex items-center justify-between mb-3 border-b border-cinema-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <h3 class="font-bold text-white text-sm">پرامپت نهایی تولید شده (Live Output)</h3>
+            </div>
+            <span class="text-[11px] font-mono-code text-slate-400">{{ wordCount }} کلمه</span>
+          </div>
+
+          <!-- Prompt Box -->
+          <div class="relative mb-4">
+            <div 
+              id="promptBox" 
+              dir="ltr" 
+              class="w-full min-h-[180px] max-h-[340px] overflow-y-auto bg-cinema-950 border border-cinema-800 rounded-xl p-4 text-xs font-mono-code text-slate-200 leading-relaxed select-all"
+            >
+              {{ generatedPrompt }}
+            </div>
+
+            <!-- Copy button overlay -->
+            <button 
+              @click="copyPrompt" 
+              class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-cinema-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-md active:scale-95"
+            >
+              <svg v-if="!copied" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <svg v-else class="w-4 h-4 text-emerald-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>{{ copied ? 'کپی شد!' : 'کپی پرامپت' }}</span>
+            </button>
+          </div>
+
+          <!-- Target Model Presets -->
+          <div class="mb-4">
+            <div class="text-xs text-slate-400 mb-1.5">تنظیمات سازگاری با مدل هوش مصنوعی:</div>
+            <div class="grid grid-cols-2 gap-1.5 text-xs">
+              <button 
+                v-for="target in aiTargets" 
+                :key="target.id"
+                @click="selectedTarget = target.id"
+                :class="selectedTarget === target.id ? 'bg-cinema-800 text-amber-300 border-amber-500/50' : 'bg-cinema-950 text-slate-400 border-cinema-800 hover:text-slate-200'"
+                class="p-2 rounded-lg border text-start transition-all flex items-center justify-between"
+              >
+                <span>{{ target.name }}</span>
+                <span class="text-[10px] font-mono-code text-slate-500">{{ target.suffix }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Ingredients List (Chips) -->
+          <div class="border-t border-cinema-800 pt-3">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+              <span>عناصر فعال در صحنه ({{ totalSelectedCount }} مورد)</span>
+              <button v-if="totalSelectedCount > 0" @click="resetSelections" class="text-amber-400 hover:underline text-[11px]">حذف همه فیلترها</button>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 max-h-[140px] overflow-y-auto pr-1">
+              <span v-if="customSubject" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 text-[11px]">
+                سوژه اختصاصی
+                <span @click="customSubject = ''" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <!-- Selected directors -->
+              <span v-for="d in selected.directors" :key="d.id" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[11px]">
+                {{ d.nameFa }}
+                <span @click="toggleSelection('directors', d)" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <!-- Selected cameras -->
+              <span v-for="c in selected.cameras" :key="c.id" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/30 text-[11px]">
+                {{ c.nameFa }}
+                <span @click="toggleSelection('cameras', c)" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <!-- Selected lenses -->
+              <span v-for="l in selected.lenses" :key="l.id" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/30 text-[11px]">
+                {{ l.nameFa }}
+                <span @click="toggleSelection('lenses', l)" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <!-- Selected lighting -->
+              <span v-for="lt in selected.lighting" :key="lt.id" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-300 border border-yellow-500/30 text-[11px]">
+                {{ lt.nameFa }}
+                <span @click="toggleSelection('lighting', lt)" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <!-- Selected shots -->
+              <span v-for="s in selected.shots" :key="s.id" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-pink-500/10 text-pink-300 border border-pink-500/30 text-[11px]">
+                {{ s.nameFa }}
+                <span @click="toggleSelection('shots', s)" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <!-- Selected mediums -->
+              <span v-for="m in selected.mediums" :key="m.id" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 text-[11px]">
+                {{ m.nameFa }}
+                <span @click="toggleSelection('mediums', m)" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <!-- Selected colors -->
+              <span v-for="col in selected.colors" :key="col.id" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[11px]">
+                {{ col.nameFa }}
+                <span @click="toggleSelection('colors', col)" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <!-- Selected ratio -->
+              <span v-if="selectedRatio" class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-700 text-slate-200 text-[11px]">
+                {{ selectedRatio.ratio }}
+                <span @click="selectedRatio = null" class="cursor-pointer text-slate-400 hover:text-white">×</span>
+              </span>
+
+              <span v-if="totalSelectedCount === 0 && !customSubject" class="text-xs text-slate-500 italic">
+                هیچ گزینه‌ای هنوز انتخاب نشده است. از منوهای سمت راست شروع کنید.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cinema Tips & Formula Guide -->
+        <div class="bg-cinema-900/60 border border-cinema-800 rounded-xl p-4 text-xs space-y-2 text-slate-400">
+          <div class="font-bold text-slate-300 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            فرمول استاندارد چیدمان پرامپت سینمایی
+          </div>
+          <p class="font-mono-code text-[11px] text-amber-300/80 leading-relaxed" dir="ltr">
+            [Subject] + [Shot/Move] + [Director Style] + [Camera/Stock] + [Lens] + [Lighting] + [Color] + [AR]
+          </p>
+          <p class="text-slate-400 leading-relaxed">
+            این ابزار توکن‌های تخصصی اپتیک و سینما را دقیقا طبق وزن‌های استاندارد موتورهای Runway Gen-3، Kling AI، Midjourney v6 و Luma مرتب و تزریق می‌کند.
+          </p>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-cinema-800 bg-cinema-900/60 py-4 text-center text-xs text-slate-500">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <span>استودیو تخصصی پرامپت سینمایی و ویدیویی هوش مصنوعی</span>
+        <span class="font-mono-code text-[11px] text-slate-400">Built with pure HTML5 / Tailwind / Vue3 for GitHub Pages</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
