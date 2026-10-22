@@ -38,6 +38,7 @@
     }
   </script>
   <style>
+    [v-cloak] { display: none !important; }
     * {
       font-family: 'Vazirmatn', sans-serif !important;
       letter-spacing: 0 !important;
@@ -64,7 +65,7 @@
 </head>
 <body class="bg-cinema-950 text-slate-200 min-h-screen selection:bg-amber-500/30 selection:text-amber-200 antialiased">
 
-  <div id="app" class="min-h-screen flex flex-col justify-between">
+  <div id="app" v-cloak class="min-h-screen flex flex-col justify-between">
     
     <!-- Header -->
     <header class="border-b border-cinema-700/60 bg-cinema-900/80 backdrop-blur-md sticky top-0 z-40">
@@ -155,7 +156,7 @@
             :class="activeTab === cat.id ? 'text-amber-400 border-b-2 border-amber-500 font-bold bg-amber-500/5' : 'text-slate-400 hover:text-slate-200'"
             class="px-3 py-2 whitespace-nowrap transition-all rounded-t-lg flex items-center gap-1.5"
           >
-            <span>{{ cat.icon }}</span>
+            
             <span>{{ cat.nameFa }}</span>
             <span v-if="getSelectedCount(cat.id)" class="w-4 h-4 rounded-full bg-amber-500 text-cinema-950 text-[10px] flex items-center justify-center font-bold">
               {{ getSelectedCount(cat.id) }}

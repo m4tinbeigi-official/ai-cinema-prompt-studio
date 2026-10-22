@@ -25,14 +25,14 @@ createApp({
       ],
 
       categories: [
-        { id: 'directors', nameFa: 'کارگردانان و مؤلفان', icon: '🎬' },
-        { id: 'cameras', nameFa: 'دوربین و فیلم خام', icon: '📹' },
-        { id: 'lenses', nameFa: 'لنز و اپتیک', icon: '🔍' },
-        { id: 'lighting', nameFa: 'نورپردازی و اتمسفر', icon: '💡' },
-        { id: 'shots', nameFa: 'نما و حرکت دوربین', icon: '🎥' },
-        { id: 'mediums', nameFa: 'موتور گیم و انیمیشن', icon: '🕹️' },
-        { id: 'color', nameFa: 'رنگ و پالت تصویری', icon: '🎨' },
-        { id: 'ratio', nameFa: 'نسبت تصویر (AR)', icon: '📐' }
+        { id: 'directors', nameFa: 'کارگردانان و مؤلفان', icon: '' },
+        { id: 'cameras', nameFa: 'دوربین و فیلم خام', icon: '' },
+        { id: 'lenses', nameFa: 'لنز و اپتیک', icon: '' },
+        { id: 'lighting', nameFa: 'نورپردازی و اتمسفر', icon: '' },
+        { id: 'shots', nameFa: 'نما و حرکت دوربین', icon: '' },
+        { id: 'mediums', nameFa: 'موتور گیم و انیمیشن', icon: '️' },
+        { id: 'color', nameFa: 'رنگ و پالت تصویری', icon: '' },
+        { id: 'ratio', nameFa: 'نسبت تصویر (AR)', icon: '' }
       ],
 
       selected: {
@@ -99,7 +99,7 @@ createApp({
         { id: 'close_up_cu', nameFa: 'کلوزآپ چهره (Intense Close-Up)', typeFa: 'اندازه‌نما', descFa: 'پوشش کامل سر تا گردن با فوکوس روی احساسات و مردمک چشم.', promptTag: 'cinematic close-up shot, intense emotional focus, detailed facial expressions' },
         { id: 'dolly_zoom', nameFa: 'دالی زوم سرگیجه (Vertigo Effect / Zolly)', typeFa: 'حرکت دوربین', descFa: 'ثابت ماندن سوژه در حالی که پس‌زمینه با شوک بصری منبسط یا فشرده می‌شود.', promptTag: 'dolly zoom vertigo effect, background stretching dynamically while subject stays static' },
         { id: 'low_angle_hero', nameFa: 'لو انگل قدرتمند (Heroic Low-Angle)', typeFa: 'زاویه دوربین', descFa: 'دوربین پایین‌تر از سوژه و نگاه رو به بالا، القای حس هیبت و اقتدار.', promptTag: 'powerful low-angle perspective, heroic upward framing, commanding presence' },
-        { id: 'birds_eye_topdown', nameFa: 'دید پرنده از بالا (Bird’s-Eye View 90°)', typeFa: 'زاویه دوربین', descFa: 'عمود کامل ۹۰ درجه از آسمان به زمین، نگاه هندسی نقشه‌وار به رخدادها.', promptTag: 'top-down bird's-eye view, 90-degree zenith camera angle, geometric overhead framing' },
+        { id: 'birds_eye_topdown', nameFa: 'دید پرنده از بالا (Bird’s-Eye View 90°)', typeFa: 'زاویه دوربین', descFa: 'عمود کامل ۹۰ درجه از آسمان به زمین، نگاه هندسی نقشه‌وار به رخدادها.', promptTag: 'top-down bird\'s-eye view, 90-degree zenith camera angle, geometric overhead framing' },
         { id: 'tracking_dolly', nameFa: 'تراکینگ شات روان (Smooth Tracking Dolly)', typeFa: 'حرکت دوربین', descFa: 'حرکت موازی یا دنبال‌کننده روان دوربین هم‌گام با سوژه در راهرو یا خیابان.', promptTag: 'smooth tracking dolly shot, dynamic steady forward camera motion' },
         { id: 'handheld_shaky', nameFa: 'دوربین روی دست مستند (Handheld Shaky-Cam)', typeFa: 'حرکت دوربین', descFa: 'لرزش‌های واقع‌گرایانه دست فیلمبردار، ایجاد استرس، خطر و میدان نبرد.', promptTag: 'visceral handheld shaky-cam, documentary kinetic camera movement' }
       ],
